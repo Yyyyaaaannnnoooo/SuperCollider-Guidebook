@@ -1,0 +1,9 @@
+Extensions:
+- DistortionUGens
+Quarks:
+Bending=https://github.com/telephon/Bending
+Feedback=https://github.com/supercollider-quarks/Feedback
+PitchShiftPA=https://github.com/dyfer/PitchShiftPA
+OutputFX=https://github.com/madskjeldgaard/outputfx
+SuperSampler=https://github.com/allenloves/SuperSampler
+Vowel=https://github.com/supercollider-quarks/Vowel
