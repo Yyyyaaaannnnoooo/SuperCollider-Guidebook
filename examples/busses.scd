@@ -61,11 +61,3 @@ SynthDef.new(\supasaw, {
 (
 Synth.new(\supasaw, [\freq, exprand(100, 660), \out, ~reverb], target: ~audio_sources)
 )
-
-(
-Env.new(
-			[0, 1, 0.75, 0],
-			[0.25, 0.5, 1],
-			-16,
-		).plot;
-)

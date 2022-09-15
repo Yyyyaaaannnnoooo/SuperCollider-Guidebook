@@ -40,3 +40,6 @@ Temporary Items
 # local folders
 videos/*
 videos/
+examples/*.tags
+examples/*.tags1
+

@@ -1,6 +1,8 @@
 s.boot;
 s.quit;
 
+Signal.gaussianNoise(2048).plot
+
 // BUILD WAVES
 (
 var num_seg = rrand(6, 35);
@@ -48,7 +50,6 @@ SynthDef.new(\vosc, {
   arg out=0, amp=0.5, buf=0, num_bufs=2, freq=80, lpf=20000;
   var sig, bufpos, detune, mod, lpf_mod;
   detune = LFNoise1.kr(0.2!8).bipolar(0.2).midiratio;
-
   // bufpos = buf + LFNoise1.kr(0.05).range(0, num_bufs - 1);
   mod = SinOsc.ar(0.025).range(0.5, 0.005);
   bufpos = buf + SinOsc.kr(mod).range(0.001, num_bufs - 1.01);
@@ -66,11 +67,9 @@ x = Synth.new(\vosc, [
   \buf, ~buf[0].bufnum, \num_bufs, ~wt.size
 ]);
 )
-x.set(\freq, 80);
+x.set(\freq, 40);
+x.set(\freq, 240);
+x.set(\freq, 140);
+
 x.free;
-
 s.meter;
-
-
-
-

@@ -350,3 +350,39 @@ SynthDef.new(\slicer, {
 
 ### [Access values of Pbind](https://youtu.be/NGa2XeOoBpM?t=1706)
 
+### FX send inside SynthDef
+
+```
+// assign busses for FX
+~fx0 = Bus.audio(s, 2);
+~fx1 = Bus.audio(s, 2);
+~fxn = Bus.audio(s, 2);
+
+(
+SynthDef.new(\saw_send, {
+	arg out=0, t_trig=1, freq=220, amp=0.5, fx0_mix=0.0, fx1_mix=0.0, fxn_mix=0.0;
+	var sig, env, detune;
+	detune = LFNoise1.kr(0.2!8).bipolar(0.2).midiratio;
+	env = EnvGen.ar(Env.Perc(0.05, 1.0, 1.0, -2), t_trig, doneAction: 2);
+	sig = Saw.ar(freq * detune);
+	sig = Splay.ar(sig) * 0.5;
+	sig = sig * env;
+	Out.ar(out, sig);
+	// send channels
+	Out(~fx0, sig * fx0_mix);
+	Out(~fx1, sig * fx1_mix);
+	Out(~fxn, sig * fxn_mix);
+	}).add
+)
+```
+
+### Prepping for Live Events
+
+```
+// Create a init file for all the synths, fx and busses
+
+(
+s.wait
+)
+```
+
