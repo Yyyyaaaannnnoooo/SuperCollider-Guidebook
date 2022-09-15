@@ -1,3 +1,4 @@
 # TO DO
-[ ] Control Busses
-[ ] Midi connection
+
+- Control Busses
+- Midi connection
