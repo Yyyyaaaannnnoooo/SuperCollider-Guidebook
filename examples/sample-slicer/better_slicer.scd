@@ -43,7 +43,8 @@ SynthDef.new(\slicer, {
   fold_amt=0.15,
   clip_amt=0.15,
   bars=4,       // time in bars of original sample
-  beat=1;       // beat givent by TempoClock.beatDur
+  beat=1,       // beat givent by TempoClock.beatDur
+  grain = 5;    //timestretch grain relative size
   var sig, env, pos, clip, fold, frames, start, end, start_pos, end_pos, duration,
   sustain, pos_rate, micro_pos, micro_dur, micro_start, micro_end, tot_duration, sample_duration, stretch=1;
   tot_duration = beat * 4 * bars;
@@ -53,8 +54,6 @@ SynthDef.new(\slicer, {
   stretch = 1 / (tot_duration / sample_duration);
 
   pos_rate = (BufRateScale.ir(buf) * rate) * stretch;
-  // pos_rate = (BufRateScale.ir(buf) * rate);
-  pos_rate.poll;
   frames = BufFrames.kr(buf);
   duration = (frames / slices) * num_slices;
   start = slice * duration;
@@ -69,18 +68,19 @@ SynthDef.new(\slicer, {
   // phasor
 
   start_pos = (((rate>0)*start)+((rate<0)*end));
-  end_pos = (((rate>0)*end)+((rate<0)*start)).poll;
+  end_pos = (((rate>0)*end)+((rate<0)*start));
 
   pos = Phasor.ar(t_trig,pos_rate,start_pos,end_pos,start);
 
   // timestretch withouth Pitch shift
-  micro_dur = duration / 10;
+  micro_dur = duration / grain;
   micro_start = start;
   micro_end = start + micro_dur;
+
   micro_start = micro_start + pos;
   micro_end = micro_end + pos;
   micro_pos = Phasor.ar(t_trig, 1, micro_start, micro_end, micro_start);
-  sig = BufRd.ar(numChannels: 2, bufnum: buf, phase: pos, loop: 0, interpolation: 4);
+  sig = BufRd.ar(numChannels: 2, bufnum: buf, phase: micro_pos, loop: 0, interpolation: 4);
   fold = CrossoverDistortion.ar(sig, fold_amt, smooth: clip_amt);
   sig = Mix.ar([sig * amp, fold]);
   sig = sig * amp * env;
@@ -89,7 +89,17 @@ SynthDef.new(\slicer, {
 )
 
 t = TempoClock.new(185/60);
-~sl = Synth(\slicer, [\buf, ~breaks[3], \num_slices, 1, \beat, t.beatDur, \rate, 0.1])
+(
+~sl = Synth(\slicer, [
+  \buf, ~breaks[3],
+  \num_slices, 1,
+  \beat, t.beatDur,
+  \rate, 0.25,
+  \grain, 5
+]);
+
+
+)
 
 
 // create a clock in sc
@@ -118,13 +128,13 @@ Pdef(\p, Pbind(
   [Pxrand([1, 2, 4, 1.5, 1, 2, 1, 1, 1, 0.5, 2, 0.1, -1, -2, -0.5], 1)],
   inf),*/
   /*\loops, Pfunc({
-    arg ev;
-    var return;
-    if(
-      ev[\rate] < 1 ,
-      {return = 1},
-      {return = ev[\rate].abs}
-    );
+  arg ev;
+  var return;
+  if(
+  ev[\rate] < 1 ,
+  {return = 1},
+  {return = ev[\rate].abs}
+  );
   }
   ),*/
   \buf, Pseq([Pshuf([~breaks[3]], 1)] , inf),
