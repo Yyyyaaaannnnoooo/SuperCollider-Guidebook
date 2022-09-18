@@ -1,7 +1,5 @@
 # SuperCollider Guidebook
 
-[toc]
-
 ### Basic Commands
 
 ```
