@@ -13,7 +13,7 @@ cmd + enter
 
 // evaluate single line of code
 
-cmd + ?????
+cmd + shift + enter
 
 // quit everything
 cmd + .
@@ -376,15 +376,6 @@ SynthDef.new(\saw_send, {
 )
 ```
 
-### Prepping for Live Events
-
-```
-// Create a init file for all the synths, fx and busses
-
-(
-s.wait
-)
-```
 
 
 ### TO DO
