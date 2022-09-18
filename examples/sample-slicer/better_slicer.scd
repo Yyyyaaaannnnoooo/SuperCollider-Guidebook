@@ -30,7 +30,7 @@ subfolders.do({
 
 (
 SynthDef.new(\slicer, {
-  arg t_trig=1, 
+  arg t_trig=1,
   buf=0,        // ample to play
   amp=0.5,      // volume control
   slice=0,      // the slice number to play
@@ -39,13 +39,13 @@ SynthDef.new(\slicer, {
   rel=0.05,     // release
   loops=1,      // how many times does the loop speed up
   rate=1,       // playback speed
-  out=0,        //where does the signal flow out to 
+  out=0,        //where does the signal flow out to
   fold_amt=0.15,
   clip_amt=0.15,
   bars=4,       // time in bars of original sample
   beat=1;       // beat givent by TempoClock.beatDur
-  var sig, env, pos, clip, fold, frames, start, end, duration,
-  sustain, pos_rate, tot_duration, sample_duration, stretch=1;
+  var sig, env, pos, clip, fold, frames, start, end, start_pos, end_pos, duration,
+  sustain, pos_rate, micro_pos, micro_dur, micro_start, micro_end, tot_duration, sample_duration, stretch=1;
   tot_duration = beat * 4 * bars;
 
   sample_duration = BufDur.kr(buf);
@@ -53,10 +53,13 @@ SynthDef.new(\slicer, {
   stretch = 1 / (tot_duration / sample_duration);
 
   pos_rate = (BufRateScale.ir(buf) * rate) * stretch;
+  // pos_rate = (BufRateScale.ir(buf) * rate);
+  pos_rate.poll;
   frames = BufFrames.kr(buf);
   duration = (frames / slices) * num_slices;
   start = slice * duration;
   end = start + duration;
+
   sustain = (duration / rate.abs / BufSampleRate.ir(buf)) * loops;
   env = EnvGen.ar(
     Env.new(levels: [0,1,1,0],times: [0, sustain - rel, rel],curve: \lin),
@@ -64,9 +67,19 @@ SynthDef.new(\slicer, {
     doneAction: 2,
   );
   // phasor
-  start = (((rate>0)*start)+((rate<0)*end));
-  end= (((rate>0)*end)+((rate<0)*start));
-  pos = Phasor.ar(t_trig,pos_rate,start,end,start);
+
+  start_pos = (((rate>0)*start)+((rate<0)*end));
+  end_pos = (((rate>0)*end)+((rate<0)*start)).poll;
+
+  pos = Phasor.ar(t_trig,pos_rate,start_pos,end_pos,start);
+
+  // timestretch withouth Pitch shift
+  micro_dur = duration / 10;
+  micro_start = start;
+  micro_end = start + micro_dur;
+  micro_start = micro_start + pos;
+  micro_end = micro_end + pos;
+  micro_pos = Phasor.ar(t_trig, 1, micro_start, micro_end, micro_start);
   sig = BufRd.ar(numChannels: 2, bufnum: buf, phase: pos, loop: 0, interpolation: 4);
   fold = CrossoverDistortion.ar(sig, fold_amt, smooth: clip_amt);
   sig = Mix.ar([sig * amp, fold]);
@@ -74,6 +87,9 @@ SynthDef.new(\slicer, {
   Out.ar(out, sig);
 }).add;
 )
+
+t = TempoClock.new(185/60);
+~sl = Synth(\slicer, [\buf, ~breaks[3], \num_slices, 1, \beat, t.beatDur, \rate, 0.1])
 
 
 // create a clock in sc
