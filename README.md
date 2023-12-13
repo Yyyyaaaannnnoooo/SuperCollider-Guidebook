@@ -67,9 +67,9 @@ if statement syntax
 
 (
 if(
-		[0, 1].choose == 0, // statement to evaluate
-		{"0 was chosen".postln;}, // if true do this
-		{"1 was chosen".postln;}	// if false do this
+	[0, 1].choose == 0, // statement to evaluate
+	{"0 was chosen".postln;}, // if true do this
+	{"1 was chosen".postln;}	// if false do this
 	);
 )
 
@@ -81,8 +81,8 @@ if(
 // for loop
 for (
   3, 
-	7, 
-	{ arg i; i.postln }
+  7, 
+  { arg i; i.postln }
 ); // prints values 3 through 7
 
 // do loop [maybe better suited for musical stuff]
