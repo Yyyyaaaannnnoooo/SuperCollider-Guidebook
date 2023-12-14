@@ -115,7 +115,7 @@ Pdef(\s2, Pbind(
   \instrument, \gabberkick,
   \dur, Prand(0.5.dup(16) ++ [1, 2, 0.5] ++ 0.25.dup(10), inf),
   // \decay, 0.0125,
-  \dur, 2,
+  // \dur, 2,
   \amp, -12.dbamp,
   \freq, Prand([20, 40, 80, 160], inf),
   \cutoff, Pfunc({
