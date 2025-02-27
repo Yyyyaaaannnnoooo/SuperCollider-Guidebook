@@ -3,6 +3,7 @@
 ### Basic Commands
 
 ```
+JavaScript
 // Auto complete brackets, and other stuff
 preferences => Behavior => Auto insert Matching...
 // evaluate line or region of code within
