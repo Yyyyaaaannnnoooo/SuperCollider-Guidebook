@@ -172,7 +172,8 @@ rrand(0.5, 20)
 // exponential distribution of randomness towards the
 // lower value in the function to be used with frequency and 
 // amplitude. It always returns floats!
-exprand(10, 30) 
+exprand(10, 30)
+
 ```
 
 ### Making Sound

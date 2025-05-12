@@ -39,6 +39,27 @@ d.set(\freq, 160)
 // free the synth
 d.free
 
+s.boot
+s.scope
+// SuperSaw
+
+(
+SynthDef.new(\supersaw, {
+	arg freq = 60, amp = 0.25, detune=10, lpf = 3000;
+	var sig, num_osc = 16;
+	sig = LFSaw.ar(freq.varlag(0.5) + ({rrand(0.01, detune.varlag(0.5))}!num_osc));
+	sig = Splay.ar(sig.scramble, 1);
+	sig = RLPF.ar(sig, lpf.varlag(0.5, -2));
+	sig = sig * amp;
+	Out.ar(0, sig;);
+}).add
+)
+
+x = Synth(\supersaw)
+x.set(\detune, 10);
+x.set(\lpf, 2000)
+x.set(\freq, 30.midicps)
+x.set(\amp, -12.dbamp)
 
 (
 SynthDef.new(\noise, {
