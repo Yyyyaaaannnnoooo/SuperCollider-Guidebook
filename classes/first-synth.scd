@@ -44,11 +44,11 @@ Env.perc(curve: -2).plot;
 
 
 Env.adsr().plot;
-
+(
 Env.new(
   [0, 1, 0.5, 0.5, 0],
   [0.25, 1, 2.5, 1],
   -2
 ).plot
 
-
+)
